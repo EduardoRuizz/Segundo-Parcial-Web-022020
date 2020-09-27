@@ -15,6 +15,8 @@ class ProductosController extends Controller
     public function index()
     {
         //
+
+        return view('Productos.index');
     }
 
     /**
@@ -25,6 +27,9 @@ class ProductosController extends Controller
     public function create()
     {
         //
+
+
+        return view('Productos.create');
     }
 
     /**
@@ -35,7 +40,15 @@ class ProductosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+
+        $datosProductos = request() -> all();
+
+        return response() -> json($datosProductos);
+
+
+
+
     }
 
     /**
