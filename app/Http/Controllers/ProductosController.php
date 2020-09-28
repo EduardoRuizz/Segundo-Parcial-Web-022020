@@ -142,9 +142,6 @@ class ProductosController extends Controller
 
         productos::where('id','=',$id) -> update($datosProductos);
 
-       // $producto = productos::findOrFail($id);
-
-       // return view('productos.edit',compact('producto'));
 
        return redirect('productos') -> with('Mensaje','Producto Modificado con Exito');
 
@@ -159,16 +156,12 @@ class ProductosController extends Controller
      */
     public function destroy($id)
     {
-        
-
+    
         $producto = productos::findOrFail($id);
 
         if(Storage::delete('public/'.$producto -> Imagen)){
             productos::destroy($id);
         }
-
-
-       
 
         return redirect('productos') -> with('Mensaje','Producto Eliminado con Exito');
 
