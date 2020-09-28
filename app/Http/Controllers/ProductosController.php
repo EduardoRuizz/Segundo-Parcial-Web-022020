@@ -14,9 +14,11 @@ class ProductosController extends Controller
      */
     public function index()
     {
-        //
+     
 
-        return view('Productos.index');
+
+        $datos['productos']=productos::paginate(5);
+        return view('productos.index',$datos);
     }
 
     /**
@@ -29,7 +31,13 @@ class ProductosController extends Controller
         //
 
 
-        return view('Productos.create');
+
+        
+
+        return view('productos.create');
+
+
+
     }
 
     /**
@@ -42,9 +50,24 @@ class ProductosController extends Controller
     {
         
 
-        $datosProductos = request() -> all();
+        // $datosProductos = request() -> all();
 
-        return response() -> json($datosProductos);
+        $datosProductos = request() -> except('_token');
+
+
+        if($request -> hasFile('Imagen')){
+
+            $datosProductos['Imagen']= $request -> file('Imagen') -> store('uploads','public');
+        }
+
+        productos::insert($datosProductos);
+
+        // return response() -> json($datosProductos);
+
+      return redirect('productos') -> with('Mensaje','Producto Agregado con Exito');
+
+
+
 
 
 
@@ -91,8 +114,11 @@ class ProductosController extends Controller
      * @param  \App\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Productos $productos)
+    public function destroy($id)
     {
-        //
+        
+productos::destroy($id);
+return redirect('productos') -> with('Mensaje','Producto Eliminado con Exito');
+
     }
 }

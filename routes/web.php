@@ -21,4 +21,4 @@ Route::get('/', function () {
 
  // Route::post('/Productos/create', 'ProductosController@create');
 
- Route::resource('Productos', 'ProductosController');
+ Route::resource('productos', 'ProductosController');
