@@ -3,9 +3,12 @@
 
 @section('content')
 
-@if(Session::has('Mensaje')){{
-    Session::get('Mensaje')
-}}
+   @if(Session::has('Mensaje'))
+
+   <div class="alert alert-success" role="alert">
+   {{ Session::get('Mensaje')}}
+   </div>
+   
 @endif
 
 
@@ -21,7 +24,13 @@
 </div>
 
 
-
+<nav class="navbar navbar-light float-right">
+  <form class="form-inline">
+    <input name="buscarpor" class="form-control mr-sm-2" type="search" aria-label="Search">
+    <button class="btn btn-primary my-2 my-sm-0" type="submit">Buscar</button>
+  </form>
+</nav>
+<br>
    
 
 <div class="container-fluid px-4">
@@ -42,7 +51,7 @@
             </tr>
         </thead>
         <tbody>
-        @foreach($productos as $producto)
+        @foreach($datos as $producto)
             <tr class="shadow-sm ">
                 <td>{{$loop -> iteration}}</td>
 
@@ -51,7 +60,11 @@
                 <td>{{$producto-> Cantidad}}</td>
                 <td>{{$producto-> Precio}}</td>
                 
-                <td>  
+                <td> 
+                    
+                <a class="btn btn-warning" href="{{url('/productos/'.$producto -> id.'/edit') }}">Editar</a>
+            
+            
                     <form method="post" action="{{url('/productos/'.$producto ->id)}}" style="display:inline">
 
                     {{csrf_field()}}
@@ -66,6 +79,9 @@
             @endforeach
         </tbody>
     </table>
+
+  {{$datos->links()}}
+
  </div>
 
 @endsection

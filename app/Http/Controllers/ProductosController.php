@@ -1,9 +1,12 @@
 <?php
 
+
+
 namespace App\Http\Controllers;
 
 use App\Productos;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductosController extends Controller
 {
@@ -12,13 +15,18 @@ class ProductosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
      
 
 
-        $datos['productos']=productos::paginate(5);
-        return view('productos.index',$datos);
+        
+        $name = $request->get('buscarpor');
+
+
+        $datos=productos:: where('Nombre', 'LIKE', "%$name%") -> paginate(5);
+        return view('productos.index',compact('datos'));
+
     }
 
     /**
@@ -35,6 +43,8 @@ class ProductosController extends Controller
         
 
         return view('productos.create');
+
+        
 
 
 
@@ -72,6 +82,7 @@ class ProductosController extends Controller
 
 
 
+
     }
 
     /**
@@ -91,9 +102,16 @@ class ProductosController extends Controller
      * @param  \App\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function edit(Productos $productos)
+    public function edit($id)
     {
-        //
+      
+
+        $producto = productos::findOrFail($id);
+
+        return view('productos.edit',compact('producto'));
+
+
+
     }
 
     /**
@@ -103,9 +121,34 @@ class ProductosController extends Controller
      * @param  \App\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Productos $productos)
+    public function update(Request $request, $id)
     {
-        //
+        
+
+        $datosProductos = request() -> except(['_token','_method']);
+
+
+        if($request -> hasFile('Imagen')){
+
+
+            $producto = productos::findOrFail($id);
+
+            Storage::delete('public/'.$producto -> Imagen);
+
+
+
+            $datosProductos['Imagen']= $request -> file('Imagen') -> store('uploads','public');
+        }
+
+        productos::where('id','=',$id) -> update($datosProductos);
+
+       // $producto = productos::findOrFail($id);
+
+       // return view('productos.edit',compact('producto'));
+
+       return redirect('productos') -> with('Mensaje','Producto Modificado con Exito');
+
+
     }
 
     /**
@@ -117,8 +160,19 @@ class ProductosController extends Controller
     public function destroy($id)
     {
         
-productos::destroy($id);
-return redirect('productos') -> with('Mensaje','Producto Eliminado con Exito');
+
+        $producto = productos::findOrFail($id);
+
+        if(Storage::delete('public/'.$producto -> Imagen)){
+            productos::destroy($id);
+        }
+
+
+       
+
+        return redirect('productos') -> with('Mensaje','Producto Eliminado con Exito');
+
+
 
     }
 }
